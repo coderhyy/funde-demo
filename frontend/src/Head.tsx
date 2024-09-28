@@ -13,22 +13,26 @@ const Head = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0">
-      <div className="container m-auto mt-4">
-        <NavigationMenu>
-          <NavigationMenuList className="grid-cols-3 gap-2">
-            <NavigationMenuItem>
-              <Button onClick={() => toPage("/search")} variant="ghost">
-                Search
-              </Button>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Button onClick={() => toPage("/")} variant="ghost">
-                Home
-              </Button>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+    <header className="flex items-center justify-between p-4 shadow-md">
+      <div className="cursor-pointer text-2xl font-bold" onClick={() => toPage("/")}>
+        Logo
+      </div>
+      <NavigationMenu>
+        <NavigationMenuList className="grid-cols-3 gap-2">
+          <NavigationMenuItem>
+            <Button onClick={() => toPage("/")} variant="ghost">
+              Home
+            </Button>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Button onClick={() => toPage("/search")} variant="ghost">
+              Search
+            </Button>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
+      <div>
+        <Button onClick={() => toPage("/login")}>Login</Button>
       </div>
     </header>
   );

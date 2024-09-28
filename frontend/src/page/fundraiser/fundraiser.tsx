@@ -1,7 +1,9 @@
-import { Button, buttonVariants } from "@/components/ui/button";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button } from "@/components/ui/button";
 import { createAlova } from "alova";
 import adapterFetch from "alova/fetch";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
 interface Fundraiser {
   ACTIVE: number;
   CAPTION: string;
@@ -13,10 +15,10 @@ interface Fundraiser {
   TARGET_FUNDING: number;
 }
 
-const Fundraiser = () => {
+const FundraiserPage = () => {
   // 初始化一个空的Fundraiser对象
   const handleDonateClick = () => {
-    alert("此功能正在建设中");
+    alert("This feature is under construction");
   };
   const alovaInstance = createAlova({
     baseURL: "http://localhost:3000", // 替换为你的 API 基地址
@@ -24,7 +26,16 @@ const Fundraiser = () => {
   });
   const urlParams = new URLSearchParams(window.location.search);
   const fundraiserId = urlParams.get("id");
-  const [fundraiser, setFundraiser] = useState<Fundraiser>({});
+  const [fundraiser, setFundraiser] = useState<Fundraiser>({
+    ACTIVE: 0,
+    CAPTION: "",
+    CATEGORY_ID: 0,
+    CITY: "",
+    CURRENT_FUNDING: 0,
+    FUNDRAISER_ID: 0,
+    ORGANIZER: "",
+    TARGET_FUNDING: 0,
+  });
   useEffect(() => {
     alovaInstance
       .Get(`/api/fundraiser/${fundraiserId}`)
@@ -37,9 +48,12 @@ const Fundraiser = () => {
         console.log(err);
       });
   }, []);
+
   return (
-    <div className="p-8 mx-auto max-w-4xl">
-      <div className="grid gap-4 mb-4 bg-white p-6 rounded-lg shadow-md">
+    <div className="mx-auto max-w-4xl p-8">
+      <div className="mb-4 grid gap-4 rounded-lg bg-white p-6 shadow-md">
+        <img alt="Need your help" className="aspect-video w-1/2" src="/need your help.webp" />
+
         <h1 className="text-2xl font-bold">{fundraiser.CAPTION}</h1>
         <div className="space-y-2">
           <div className="flex justify-between">
@@ -66,4 +80,4 @@ const Fundraiser = () => {
     </div>
   );
 };
-export default Fundraiser;
+export default FundraiserPage;
