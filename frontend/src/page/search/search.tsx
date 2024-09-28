@@ -42,9 +42,9 @@ interface Catagory {
 
 const  Search = () =>{
   const [fundraisers, setFundraisers] = useState<Fundraiser[]>([]);  
-  const [catagories, setCatagories] = useState<Catagory[]>([]);
-  const [searchKeyword, setSearchKeyword] = useState<string>("");  
-  const [selectedCategories, setSelectedCategories] = useState<Set<number>>(new Set()); 
+  const [categories, setCatagories] = useState<Catagory[]>([]);
+  const [filterFundraisers, setfilterFundraisers] = useState<Fundraiser[]>([]);  
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
   const alovaInstance = createAlova({
     baseURL: 'http://localhost:3000',
     requestAdapter: adapterFetch()
@@ -59,6 +59,7 @@ const  Search = () =>{
       .then(response => response.json())
       .then(data => {
         setFundraisers(data.data)
+        setfilterFundraisers(data.data)
       })
       .catch(err => {  
         console.log(err)
@@ -76,6 +77,17 @@ const  Search = () =>{
       });  
   }, []);
 
+  const filterByCategory = (CATEGORY_ID: number) => {
+    // 如果当前选择的类别等于传入的类别，则取消选择
+    if (selectedCategoryId === CATEGORY_ID) {
+      setSelectedCategoryId(null); // 取消选择，返回所有筹款
+      setfilterFundraisers(fundraisers); // 返回所有筹款
+    } else {
+      setSelectedCategoryId(CATEGORY_ID); // 设置当前选择的类别
+      setfilterFundraisers(fundraisers.filter(fundraiser => fundraiser.CATEGORY_ID === CATEGORY_ID)); // 过滤筹款
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-center">
@@ -87,9 +99,9 @@ const  Search = () =>{
         />
         </Command>
       <div className="flex items-center space-x-2 mb-2">
-      {catagories?.map(category => (  
+      {categories?.map(category => (  
       <div key={category.CATEGORY_ID}>  
-      <Checkbox id={`terms-${category.NAME}`}  className="mr-4"/>  
+      <Checkbox id={`terms-${category.CATEGORY_ID}`}   onCheckedChange={()=>filterByCategory(category.CATEGORY_ID)} className="mr-4"/>  
       <label  
       htmlFor={`terms-${category.CATEGORY_ID}`}  
       className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"  
@@ -101,18 +113,18 @@ const  Search = () =>{
       </div>
       
       <div className="grid grid-cols-3 gap-6">
-      {fundraisers?.map(fundraiser=>(
+      {filterFundraisers?.map(filterFundraisers=>(
           <Card className="bg-transparent hover:bg-gray-200 cursor-pointer" onClick={()=>toPage(`/fundraiser?id=${fundraiser.FUNDRAISER_ID}`)}>
             <CardHeader>     
               <img   
                 src="/need your help.webp"  alt="Need your help" />  
              </CardHeader>
              <CardContent>
-                <h2>{fundraiser.CAPTION}</h2>
+                <h2>{filterFundraisers.CAPTION}</h2>
              </CardContent>
              <CardFooter className="flex-col flex">
-                <Progress value={fundraiser.TARGET_FUNDING/fundraiser.CURRENT_FUNDING} className="mr-4"/>
-                <label className="w-full text-left">${fundraiser.CURRENT_FUNDING} raised</label>
+                <Progress value={filterFundraisers.TARGET_FUNDING/filterFundraisers.CURRENT_FUNDING} className="mr-4"/>
+                <label className="w-full text-left">${filterFundraisers.CURRENT_FUNDING} raised</label>
               </CardFooter>
           </Card> 
         ))}
